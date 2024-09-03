@@ -1,0 +1,190 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 03/09/2024 19:58:10
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : K00280502_Repeat_Lab1_P2
+00000000                             3  * Written by : K00280502
+00000000                             4  * Date       : 01/09/2024
+00000000                             5  * Description: Program 2 - Read 6 numbers, calculate and print the numbers and the result.
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  
+00001000                             8      ORG    $1000               ; Program starts at memory location $1000
+00001000                             9  
+00001000                            10  START:
+00001000                            11      ; Prompt user to enter 6 numbers
+00001000  303C 0011                 12      MOVE    #17, D0            ; TRAP 17 to print the prompt message
+00001004  43F9 0000116C             13      LEA     PROMPT_MSG, A1
+0000100A  4E4F                      14      TRAP    #15
+0000100C                            15  
+0000100C                            16      ; Read and store Num1
+0000100C  303C 0011                 17      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num1
+00001010  43F9 00001184             18      LEA     NUM1_MSG, A1
+00001016  4E4F                      19      TRAP    #15
+00001018  303C 0012                 20      MOVE    #18, D0            ; TRAP 18 to read the number
+0000101C  4E4F                      21      TRAP    #15
+0000101E  33C1 000011BE             22      MOVE.W  D1, NUM1           ; Store the number in Num1
+00001024                            23  
+00001024                            24      ; Read and store Num2
+00001024  303C 0011                 25      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num2
+00001028  43F9 0000118B             26      LEA     NUM2_MSG, A1
+0000102E  4E4F                      27      TRAP    #15
+00001030  303C 0012                 28      MOVE    #18, D0            ; TRAP 18 to read the number
+00001034  4E4F                      29      TRAP    #15
+00001036  33C1 000011C0             30      MOVE.W  D1, NUM2           ; Store the number in Num2
+0000103C                            31  
+0000103C                            32      ; Read and store Num3
+0000103C  303C 0011                 33      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num3
+00001040  43F9 00001192             34      LEA     NUM3_MSG, A1
+00001046  4E4F                      35      TRAP    #15
+00001048  303C 0012                 36      MOVE    #18, D0            ; TRAP 18 to read the number
+0000104C  4E4F                      37      TRAP    #15
+0000104E  33C1 000011C2             38      MOVE.W  D1, NUM3           ; Store the number in Num3
+00001054                            39  
+00001054                            40      ; Read and store Num4
+00001054  303C 0011                 41      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num4
+00001058  43F9 00001199             42      LEA     NUM4_MSG, A1
+0000105E  4E4F                      43      TRAP    #15
+00001060  303C 0012                 44      MOVE    #18, D0            ; TRAP 18 to read the number
+00001064  4E4F                      45      TRAP    #15
+00001066  33C1 000011C4             46      MOVE.W  D1, NUM4           ; Store the number in Num4
+0000106C                            47  
+0000106C                            48      ; Read and store Num5
+0000106C  303C 0011                 49      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num5
+00001070  43F9 000011A0             50      LEA     NUM5_MSG, A1
+00001076  4E4F                      51      TRAP    #15
+00001078  303C 0012                 52      MOVE    #18, D0            ; TRAP 18 to read the number
+0000107C  4E4F                      53      TRAP    #15
+0000107E  33C1 000011C6             54      MOVE.W  D1, NUM5           ; Store the number in Num5
+00001084                            55  
+00001084                            56      ; Read and store Num6
+00001084  303C 0011                 57      MOVE    #17, D0            ; TRAP 17 to print the prompt for Num6
+00001088  43F9 000011A7             58      LEA     NUM6_MSG, A1
+0000108E  4E4F                      59      TRAP    #15
+00001090  303C 0012                 60      MOVE    #18, D0            ; TRAP 18 to read the number
+00001094  4E4F                      61      TRAP    #15
+00001096  33C1 000011C8             62      MOVE.W  D1, NUM6           ; Store the number in Num6
+0000109C                            63  
+0000109C                            64      ; Perform the calculation (Num1*Num2) + (Num3*Num4) + (Num5*Num6)
+0000109C  3A39 000011BE             65      MOVE.W  NUM1, D5           ; Load Num1 into D5
+000010A2  CBF9 000011C0             66      MULS    NUM2, D5           ; D5 = Num1 * Num2
+000010A8                            67  
+000010A8  3C39 000011C2             68      MOVE.W  NUM3, D6           ; Load Num3 into D6
+000010AE  CDF9 000011C4             69      MULS    NUM4, D6           ; D6 = Num3 * Num4
+000010B4  DA86                      70      ADD.L   D6, D5             ; D5 = D5 + D6
+000010B6                            71  
+000010B6  3E39 000011C6             72      MOVE.W  NUM5, D7           ; Load Num5 into D7
+000010BC  CFF9 000011C8             73      MULS    NUM6, D7           ; D7 = Num5 * Num6
+000010C2  DA87                      74      ADD.L   D7, D5             ; D5 = D5 + D7 (final result in D5)
+000010C4                            75  
+000010C4                            76      ; Print out the numbers and the answer
+000010C4  303C 0011                 77      MOVE    #17, D0            ; TRAP 17 to print Num1
+000010C8  43F9 00001184             78      LEA     NUM1_MSG, A1
+000010CE  4E4F                      79      TRAP    #15
+000010D0  3239 000011BE             80      MOVE.W  NUM1, D1           ; Move Num1 into D1 for display
+000010D6  303C 000E                 81      MOVE    #14, D0            ; Use TRAP 14 to print number
+000010DA  4E4E                      82      TRAP    #14                ; Print Num1
+000010DC                            83  
+000010DC  303C 0011                 84      MOVE    #17, D0            ; TRAP 17 to print Num2
+000010E0  43F9 0000118B             85      LEA     NUM2_MSG, A1
+000010E6  4E4F                      86      TRAP    #15
+000010E8  3239 000011C0             87      MOVE.W  NUM2, D1           ; Move Num2 into D1 for display
+000010EE  303C 000E                 88      MOVE    #14, D0            ; Use TRAP 14 to print number
+000010F2  4E4E                      89      TRAP    #14                ; Print Num2
+000010F4                            90  
+000010F4  303C 0011                 91      MOVE    #17, D0            ; TRAP 17 to print Num3
+000010F8  43F9 00001192             92      LEA     NUM3_MSG, A1
+000010FE  4E4F                      93      TRAP    #15
+00001100  3239 000011C2             94      MOVE.W  NUM3, D1           ; Move Num3 into D1 for display
+00001106  303C 000E                 95      MOVE    #14, D0            ; Use TRAP 14 to print number
+0000110A  4E4E                      96      TRAP    #14                ; Print Num3
+0000110C                            97  
+0000110C  303C 0011                 98      MOVE    #17, D0            ; TRAP 17 to print Num4
+00001110  43F9 00001199             99      LEA     NUM4_MSG, A1
+00001116  4E4F                     100      TRAP    #15
+00001118  3239 000011C4            101      MOVE.W  NUM4, D1           ; Move Num4 into D1 for display
+0000111E  303C 000E                102      MOVE    #14, D0            ; Use TRAP 14 to print number
+00001122  4E4E                     103      TRAP    #14                ; Print Num4
+00001124                           104  
+00001124  303C 0011                105      MOVE    #17, D0            ; TRAP 17 to print Num5
+00001128  43F9 000011A0            106      LEA     NUM5_MSG, A1
+0000112E  4E4F                     107      TRAP    #15
+00001130  3239 000011C6            108      MOVE.W  NUM5, D1           ; Move Num5 into D1 for display
+00001136  303C 000E                109      MOVE    #14, D0            ; Use TRAP 14 to print number
+0000113A  4E4E                     110      TRAP    #14                ; Print Num5
+0000113C                           111  
+0000113C  303C 0011                112      MOVE    #17, D0            ; TRAP 17 to print Num6
+00001140  43F9 000011A7            113      LEA     NUM6_MSG, A1
+00001146  4E4F                     114      TRAP    #15
+00001148  3239 000011C8            115      MOVE.W  NUM6, D1           ; Move Num6 into D1 for display
+0000114E  303C 000E                116      MOVE    #14, D0            ; Use TRAP 14 to print number
+00001152  4E4E                     117      TRAP    #14                ; Print Num6
+00001154                           118  
+00001154                           119      ; Print the result
+00001154  303C 0011                120      MOVE    #17, D0            ; TRAP 17 to print the result message
+00001158  43F9 000011AE            121      LEA     RESULT_MSG, A1
+0000115E  4E4F                     122      TRAP    #15
+00001160                           123  
+00001160  2205                     124      MOVE.L  D5, D1             ; Move the result into D1
+00001162  303C 000E                125      MOVE    #14, D0            ; Use TRAP 14 to print the result
+00001166  4E4E                     126      TRAP    #14                ; Print the result
+00001168                           127  
+00001168  FFFF FFFF                128      SIMHALT                    ; Halt the simulator
+0000116C                           129  
+0000116C                           130  ; Data section
+0000116C                           131  PROMPT_MSG:
+0000116C= 50 6C 65 61 73 65 ...    132      DC.B    'Please enter 6 numbers.', 0
+00001184                           133  
+00001184                           134  NUM1_MSG:
+00001184= 4E 75 6D 31 3A 20 00     135      DC.B    'Num1: ', 0
+0000118B                           136  
+0000118B                           137  NUM2_MSG:
+0000118B= 4E 75 6D 32 3A 20 00     138      DC.B    'Num2: ', 0
+00001192                           139  
+00001192                           140  NUM3_MSG:
+00001192= 4E 75 6D 33 3A 20 00     141      DC.B    'Num3: ', 0
+00001199                           142  
+00001199                           143  NUM4_MSG:
+00001199= 4E 75 6D 34 3A 20 00     144      DC.B    'Num4: ', 0
+000011A0                           145  
+000011A0                           146  NUM5_MSG:
+000011A0= 4E 75 6D 35 3A 20 00     147      DC.B    'Num5: ', 0
+000011A7                           148  
+000011A7                           149  NUM6_MSG:
+000011A7= 4E 75 6D 36 3A 20 00     150      DC.B    'Num6: ', 0
+000011AE                           151  
+000011AE                           152  RESULT_MSG:
+000011AE= 54 68 65 20 61 6E ...    153      DC.B    'The answer is: ', 0
+000011BE                           154  
+000011BE                           155  ; Storage for numbers
+000011BE= 0000                     156  NUM1    DC.W    0
+000011C0= 0000                     157  NUM2    DC.W    0
+000011C2= 0000                     158  NUM3    DC.W    0
+000011C4= 0000                     159  NUM4    DC.W    0
+000011C6= 0000                     160  NUM5    DC.W    0
+000011C8= 0000                     161  NUM6    DC.W    0
+000011CA                           162  
+000011CA                           163      END    START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+NUM1                11BE
+NUM1_MSG            1184
+NUM2                11C0
+NUM2_MSG            118B
+NUM3                11C2
+NUM3_MSG            1192
+NUM4                11C4
+NUM4_MSG            1199
+NUM5                11C6
+NUM5_MSG            11A0
+NUM6                11C8
+NUM6_MSG            11A7
+PROMPT_MSG          116C
+RESULT_MSG          11AE
+START               1000

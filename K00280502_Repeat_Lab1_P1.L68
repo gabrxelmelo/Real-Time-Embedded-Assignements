@@ -1,0 +1,161 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 03/09/2024 19:56:03
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : Lab 1 Repeat Program 1
+00000000                             3  * Written by : K00280502
+00000000                             4  * Date       : 01/09/2024
+00000000                             5  * Description: Calculator
+00000000                             6  *-----------------------------------------------------------
+00001000                             7             ORG    $1000               ; Program starts at memory location $1000
+00001000                             8  
+00001000                             9  START:
+00001000  303C 0011                 10      MOVE    #17, D0            ; TRAP 17 for printing the initial message
+00001004  43F9 000010E8             11      LEA     WELCOME_MSG, A1
+0000100A  4E4F                      12      TRAP    #15
+0000100C                            13  
+0000100C                            14  MENU_LOOP:
+0000100C  303C 0011                 15      MOVE    #17, D0            ; TRAP 17 to print the menu
+00001010  43F9 00001102             16      LEA     MENU, A1
+00001016  4E4F                      17      TRAP    #15
+00001018                            18  
+00001018  303C 0012                 19      MOVE    #18, D0            ; TRAP 18 for reading user input
+0000101C  4E4F                      20      TRAP    #15
+0000101E  1801                      21      MOVE.B  D1, D4             ; Store option in D4
+00001020                            22  
+00001020  B83C 0031                 23      CMP.B   #'1', D4           ; Check if option 1 is selected
+00001024  6700 0020                 24      BEQ     OPTION_1
+00001028  B83C 0032                 25      CMP.B   #'2', D4           ; Check if option 2 is selected
+0000102C  6700 0056                 26      BEQ     OPTION_2
+00001030  B83C 0033                 27      CMP.B   #'3', D4           ; Check if option 3 is selected
+00001034  6700 00A2                 28      BEQ     EXIT_PROGRAM
+00001038                            29  
+00001038                            30      ; Invalid option selected
+00001038                            31      
+00001038  303C 0011                 32      MOVE    #17, D0            ; TRAP 17 to print the invalid option message
+0000103C  43F9 00001153             33      LEA     INVALID_MSG, A1
+00001042  4E4F                      34      TRAP    #15
+00001044  60C6                      35      BRA     MENU_LOOP          ; Loop back to the menu
+00001046                            36  
+00001046                            37  OPTION_1:
+00001046  303C 0011                 38      MOVE    #17, D0            ; Prompt for the first number
+0000104A  43F9 0000116F             39      LEA     FIRST_NUM_MSG, A1
+00001050  4E4F                      40      TRAP    #15
+00001052  303C 0012                 41      MOVE    #18, D0            ; Read the first number
+00001056  4E4F                      42      TRAP    #15
+00001058  3A01                      43      MOVE.W  D1, D5             ; Store first number in D5
+0000105A                            44  
+0000105A  303C 0011                 45      MOVE    #17, D0            ; Prompt for the second number
+0000105E  43F9 00001188             46      LEA     SECOND_NUM_MSG, A1
+00001064  4E4F                      47      TRAP    #15
+00001066  303C 0012                 48      MOVE    #18, D0            ; Read the second number
+0000106A  4E4F                      49      TRAP    #15
+0000106C  3C01                      50      MOVE.W  D1, D6             ; Store second number in D6
+0000106E                            51  
+0000106E  CBC6                      52      MULS    D6, D5             ; Multiply D5 by D6 (result in D5)
+00001070  303C 0011                 53      MOVE    #17, D0            ; Display the result
+00001074  43F9 000011A2             54      LEA     PRODUCT_MSG, A1
+0000107A  4E4F                      55      TRAP    #15
+0000107C                            56  
+0000107C  3205                      57      MOVE    D5, D1             ; Move the product to D1 for display
+0000107E  4240                      58      CLR     D0                 ; Clear D0 before calling TRAP 14
+00001080  4E4E                      59      TRAP    #14                ; TRAP 14 to print the number
+00001082                            60  
+00001082  6088                      61      BRA     MENU_LOOP          ; Loop back to the menu
+00001084                            62  
+00001084                            63  OPTION_2:
+00001084  303C 0011                 64      MOVE    #17, D0            ; Prompt for the first number
+00001088  43F9 0000116F             65      LEA     FIRST_NUM_MSG, A1
+0000108E  4E4F                      66      TRAP    #15
+00001090  303C 0012                 67      MOVE    #18, D0            ; Read the first number
+00001094  4E4F                      68      TRAP    #15
+00001096  3A01                      69      MOVE.W  D1, D5             ; Store first number in D5
+00001098                            70  
+00001098  303C 0011                 71      MOVE    #17, D0            ; Prompt for the second number
+0000109C  43F9 00001188             72      LEA     SECOND_NUM_MSG, A1
+000010A2  4E4F                      73      TRAP    #15
+000010A4  303C 0012                 74      MOVE    #18, D0            ; Read the second number
+000010A8  4E4F                      75      TRAP    #15
+000010AA  3C01                      76      MOVE.W  D1, D6             ; Store second number in D6
+000010AC                            77  
+000010AC  8BC6                      78      DIVS    D6, D5             ; Divide D5 by D6 (D5 = quotient, remainder in D5 high word)
+000010AE  303C 0011                 79      MOVE    #17, D0            ; Display the quotient
+000010B2  43F9 000011C2             80      LEA     QUOTIENT_MSG, A1
+000010B8  4E4F                      81      TRAP    #15
+000010BA                            82  
+000010BA  3205                      83      MOVE    D5, D1             ; Move the quotient to D1 for display
+000010BC  4240                      84      CLR     D0                 ; Clear D0 before calling TRAP 14
+000010BE  4E4E                      85      TRAP    #14                ; TRAP 14 to print the quotient
+000010C0                            86  
+000010C0  303C 0011                 87      MOVE    #17, D0            ; Print remainder message
+000010C4  43F9 000011D3             88      LEA     REMAINDER_MSG, A1
+000010CA  4E4F                      89      TRAP    #15
+000010CC                            90  
+000010CC  4845                      91      SWAP    D5                 ; Swap high and low words to get the remainder in the low word
+000010CE  3205                      92      MOVE    D5, D1             ; Move the remainder to D1 for display
+000010D0  4240                      93      CLR     D0                 ; Clear D0 before calling TRAP 14
+000010D2  4E4E                      94      TRAP    #14                ; TRAP 14 to print the remainder
+000010D4                            95  
+000010D4  6000 FF36                 96      BRA     MENU_LOOP          ; Loop back to the menu
+000010D8                            97  
+000010D8                            98  EXIT_PROGRAM:
+000010D8  303C 0011                 99      MOVE    #17, D0            ; TRAP 17 to print exit message
+000010DC  43F9 000011E6            100      LEA     EXIT_MSG, A1
+000010E2  4E4F                     101      TRAP    #15
+000010E4                           102  
+000010E4  FFFF FFFF                103      SIMHALT                    ; Halt the simulator (or replace with BRA * for infinite loop)
+000010E8                           104  
+000010E8                           105  WELCOME_MSG:
+000010E8= 57 65 6C 63 6F 6D ...    106      DC.B    'Welcome to my Calculator ', 0
+00001102                           107  
+00001102                           108  MENU:
+00001102= 31 2E 20 4D 75 6C ...    109      DC.B    '1. Multiply 2 numbers ', 0
+00001119= 32 2E 20 44 69 76 ...    110      DC.B    '2. Divide 2 numbers ', 0
+0000112E= 33 2E 20 45 78 69 ...    111      DC.B    '3. Exit Program ', 0
+0000113F= 53 65 6C 65 63 74 ...    112      DC.B    'Select an option:  ', 0
+00001153                           113  
+00001153                           114  INVALID_MSG:                    ; Label for invalid message
+00001153= 49 6E 76 61 6C 69 ...    115      DC.B    'Invalid option. Try again. ', 0
+0000116F                           116  
+0000116F                           117  FIRST_NUM_MSG:                   ; Label for first number prompt
+0000116F= 45 6E 74 65 72 20 ...    118      DC.B    'Enter the first number: ' , 0
+00001188                           119  
+00001188                           120  SECOND_NUM_MSG:                  ; Label for second number prompt
+00001188= 45 6E 74 65 72 20 ...    121      DC.B    'Enter the second number: ' , 0
+000011A2                           122  
+000011A2                           123  PRODUCT_MSG:                     ; Label for product result message
+000011A2= 54 68 65 20 70 72 ...    124      DC.B    'The product of the numbers is: ' , 0
+000011C2                           125  
+000011C2                           126  QUOTIENT_MSG:                    ; Label for quotient result message
+000011C2= 54 68 65 20 51 75 ...    127      DC.B    'The Quotient is ' , 0
+000011D3                           128  
+000011D3                           129  REMAINDER_MSG:                   ; Label for remainder result message
+000011D3= 20 74 68 65 20 72 ...    130      DC.B    ' the remainder is ' , 0
+000011E6                           131  
+000011E6                           132  EXIT_MSG:                        ; Label for exit message
+000011E6= 45 78 69 74 69 6E ...    133      DC.B    'Exiting the program.' , 0
+000011FB                           134  
+000011FB                           135      END    START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+EXIT_MSG            11E6
+EXIT_PROGRAM        10D8
+FIRST_NUM_MSG       116F
+INVALID_MSG         1153
+MENU                1102
+MENU_LOOP           100C
+OPTION_1            1046
+OPTION_2            1084
+PRODUCT_MSG         11A2
+QUOTIENT_MSG        11C2
+REMAINDER_MSG       11D3
+SECOND_NUM_MSG      1188
+START               1000
+WELCOME_MSG         10E8

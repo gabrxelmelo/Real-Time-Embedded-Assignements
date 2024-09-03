@@ -1,0 +1,140 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 03/09/2024 19:49:24
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : K00280502_Repeat_Lab2
+00000000                             3  * Written by : K00280502
+00000000                             4  * Date       : 01/09/2024
+00000000                             5  * Description: Loops and Offsets
+00000000                             6  *-----------------------------------------------------------
+00001000                             7        ORG    $1000               ; Program starts at memory location $1000
+00001000                             8  
+00001000                             9  START:
+00001000  307C 07D0                 10      MOVE    #2000, A0          ; Initialize address register A0 to point to $2000 (start of storage)
+00001004                            11      
+00001004                            12  READ_NUMBERS:
+00001004  303C 0011                 13      MOVE    #17, D0            ; TRAP 17 to print the prompt message
+00001008  43F9 000010AC             14      LEA     INPUT_MSG, A1
+0000100E  4E4F                      15      TRAP    #15
+00001010                            16  
+00001010  303C 0012                 17      MOVE    #18, D0            ; TRAP 18 to read a number from the keyboard
+00001014  4E4F                      18      TRAP    #15
+00001016  3081                      19      MOVE.W  D1, (A0)           ; Store the number at the address pointed to by A0
+00001018  5488                      20      ADD.L  #2, A0             ; Increment the address by 2 (word size)
+0000101A                            21  
+0000101A                            22  
+0000101A  B27C 0000                 23      CMP.W   #0, D1             ; Check if the entered number is 0
+0000101E  66E4                      24      BNE     READ_NUMBERS       ; If not 0, continue reading numbers
+00001020                            25  
+00001020  5588                      26     SUB.L  #2, A0              ; Adjust A0 back to the last valid number location
+00001022                            27  
+00001022                            28  
+00001022                            29  SELECT_OPERATION:
+00001022  303C 0011                 30      MOVE    #17, D0            ; Prompt the user for operation selection
+00001026  43F9 000010CB             31      LEA     OPERATION_MSG, A1
+0000102C  4E4F                      32      TRAP    #15
+0000102E                            33  
+0000102E  303C 0012                 34      MOVE    #18, D0            ; TRAP 18 to read the user's choice
+00001032  4E4F                      35      TRAP    #15
+00001034  1401                      36      MOVE.B  D1, D2             ; Store user selection in D2
+00001036                            37  
+00001036  B43C 0031                 38      CMP.B   #'1', D2           ; Check if the user selected 1 (Multiply)
+0000103A  6700 0022                 39      BEQ     MULTIPLY_NUMBERS
+0000103E  B43C 0032                 40      CMP.B   #'2', D2           ; Check if the user selected 2 (Add)
+00001042  6700 0004                 41      BEQ     ADD_NUMBERS
+00001046                            42  
+00001046  60DA                      43      BRA     SELECT_OPERATION   ; If an invalid option is selected, prompt again
+00001048                            44  
+00001048                            45  ADD_NUMBERS:
+00001048  7600                      46      MOVE.L  #0, D3             ; Initialize D3 to store the sum (start with 0)
+0000104A  2248                      47      MOVEA.L A0, A1             ; Load the address of the last number into A1
+0000104C                            48  
+0000104C                            49  SUM_LOOP:
+0000104C  3811                      50      MOVE.W  (A1), D4           ; Load the current number from memory into D4
+0000104E  D644                      51      ADD.W   D4, D3             ; Add the number to D3
+00001050  5589                      52      SUBQ.L  #2, A1             ; Move to the previous number in memory
+00001052  B3FC 000007D0             53      CMPA.L  #2000, A1          ; Check if we've reached the start of storage
+00001058  6CF2                      54      BGE     SUM_LOOP           ; If not, keep looping
+0000105A                            55  
+0000105A  6000 0016                 56      BRA     PRINT_RESULTS      ; Print the results
+0000105E                            57  
+0000105E                            58  MULTIPLY_NUMBERS:
+0000105E  7601                      59      MOVE.L  #1, D3             ; Initialize D3 to store the product (start with 1)
+00001060  2248                      60      MOVEA.L A0, A1             ; Load the address of the last number into A1
+00001062                            61  
+00001062                            62  MUL_LOOP:
+00001062  3811                      63      MOVE.W  (A1), D4           ; Load the current number from memory into D4
+00001064  C7C4                      64      MULS    D4, D3             ; Multiply the number with D3
+00001066  5589                      65      SUBQ.L  #2, A1             ; Move to the previous number in memory
+00001068  203C 000007D0             66      MOVE.L  #2000, D0          ; Load the start address into D0
+0000106E  B3C0                      67      CMPA.L  D0, A1             ; Compare A1 with the start of storage
+00001070  6CF0                      68      BGE     MUL_LOOP           ; If not, keep looping
+00001072                            69  
+00001072                            70  PRINT_RESULTS:
+00001072  2248                      71      MOVEA.L A0, A1             ; Load the address of the last number into A1
+00001074                            72  
+00001074                            73  PRINT_LOOP:
+00001074  3811                      74      MOVE.W  (A1), D4           ; Load the current number from memory into D4
+00001076  303C 0011                 75      MOVE    #17, D0            ; Print "Num: " message
+0000107A  43F9 000010EB             76      LEA     NUM_MSG, A1
+00001080  4E4F                      77      TRAP    #15
+00001082                            78  
+00001082  3204                      79      MOVE.W  D4, D1             ; Move the number to D1 for display
+00001084  303C 000E                 80      MOVE    #14, D0            ; Use TRAP 14 to print number
+00001088  4E4E                      81      TRAP    #14                ; Print the number
+0000108A                            82  
+0000108A  5589                      83      SUBQ.L  #2, A1             ; Move to the previous number in memory
+0000108C  B3FC 000007D0             84      CMPA.L  #2000, A1          ; Check if we've reached the start of storage
+00001092  6CE0                      85      BGE     PRINT_LOOP         ; If not, keep looping
+00001094                            86  
+00001094                            87      ; Print the final result
+00001094  303C 0011                 88      MOVE    #17, D0            ; Print result message
+00001098  43F9 000010F1             89      LEA     RESULT_MSG, A1
+0000109E  4E4F                      90      TRAP    #15
+000010A0                            91  
+000010A0  2203                      92      MOVE.L  D3, D1             ; Move the result to D1 for display
+000010A2  303C 000E                 93      MOVE    #14, D0            ; Use TRAP 14 to print the result
+000010A6  4E4E                      94      TRAP    #14                ; Print the result
+000010A8                            95  
+000010A8  FFFF FFFF                 96      SIMHALT                    ; Halt the simulator
+000010AC                            97  
+000010AC                            98  ; Data section
+000010AC                            99  INPUT_MSG:
+000010AC= 45 6E 74 65 72 20 ...    100      DC.B    'Enter a number (0 to finish): ', 0
+000010CB                           101  
+000010CB                           102  
+000010CB                           103  OPERATION_MSG:
+000010CB= 45 6E 74 65 72 20 ...    104    DC.B    'Enter 1 to Multiply, 2 to Add: ', 0
+000010EB                           105  
+000010EB                           106  
+000010EB                           107  NUM_MSG:
+000010EB= 4E 75 6D 3A 20 00        108      DC.B    'Num: ', 0
+000010F1                           109  
+000010F1                           110  
+000010F1                           111  RESULT_MSG:
+000010F1= 54 68 65 20 72 65 ...    112      DC.B    'The result is: ', 0
+00001101                           113  
+00001101                           114  
+00001101                           115      END    START
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ADD_NUMBERS         1048
+INPUT_MSG           10AC
+MULTIPLY_NUMBERS    105E
+MUL_LOOP            1062
+NUM_MSG             10EB
+OPERATION_MSG       10CB
+PRINT_LOOP          1074
+PRINT_RESULTS       1072
+READ_NUMBERS        1004
+RESULT_MSG          10F1
+SELECT_OPERATION    1022
+START               1000
+SUM_LOOP            104C

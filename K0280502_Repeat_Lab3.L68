@@ -1,0 +1,271 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.16.01
+Created On: 02/09/2024 15:32:09
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : 7 Segment Display Controller
+00000000                             3  * Written by : Gabriel Melo
+00000000                             4  * Date       : 02/09/2024
+00000000                             5  * Description: Display various messages on a 7-Segment Display.
+00000000                             6  *-----------------------------------------------------------
+00001000                             7      ORG    $1000
+00001000                             8  START:                  ; first instruction of program
+00001000                             9  
+00001000                            10  *---------------------------------------------------------- 
+00001000                            11  * Display a digit on the 7-segment display 
+00001000                            12  * Pre:  D3.B contains 1 digit to display 
+00001000                            13  *       A2 points to 7-segment LED to use 
+00001000                            14  * Post: A2 points to next 7-segment LED 
+00001000                            15  
+00001000  103C 0020                 16      move.b  #32,d0          ; trap task to get address of hardware
+00001004  123C 0000                 17      move.b  #0,d1           ; 0 in D1 means display
+00001008  4E4F                      18      trap    #15             ; display hardware window
+0000100A                            19      
+0000100A  123C 0001                 20      move.b  #1,d1           ; 1 in D1 means get address of 7-segment display
+0000100E  4E4F                      21      trap    #15             ; get address of 7-segment display and store it in D1
+00001010  2841                      22      move.l  d1,a4           ; A4 = Address of 7-segment display
+00001012  244C                      23      move.l  a4,a2           ; Address of 7-segment display needs to be in A2 for segment7 subroutine
+00001014                            24  
+00001014                            25  *------------ Display initial characters -----------
+00001014                            26  
+00001014  163C 000F                 27      move.b  #15,d3          ; display 'o'
+00001018  6100 0192                 28      bsr     segment7
+0000101C                            29      
+0000101C  163C 000E                 30      move.b  #14,d3          ; display 'n'
+00001020  6100 018A                 31      bsr     segment7
+00001024                            32      
+00001024  163C 000A                 33      move.b  #10,d3          ; display blank
+00001028  6100 0182                 34      bsr     segment7
+0000102C                            35      
+0000102C                            36  * Ask user to hit enter to continue
+0000102C  103C 0004                 37      move.b  #4,d0           ; prompt user to hit enter
+00001030  4E4F                      38      trap    #15
+00001032                            39  
+00001032                            40  *------------ Display 'Standby' --------------------
+00001032                            41  
+00001032  163C 000C                 42      move.b  #12,d3          ; display 'S'
+00001036  6100 0174                 43      bsr     segment7
+0000103A                            44  
+0000103A  163C 000D                 45      move.b  #13,d3          ; display 't'
+0000103E  6100 016C                 46      bsr     segment7
+00001042                            47  
+00001042  163C 000E                 48      move.b  #14,d3          ; display 'a'
+00001046  6100 0164                 49      bsr     segment7
+0000104A                            50  
+0000104A  163C 000B                 51      move.b  #11,d3          ; display 'n'
+0000104E  6100 015C                 52      bsr     segment7
+00001052                            53      
+00001052  163C 000F                 54      move.b  #15,d3          ; display 'd'
+00001056  6100 0154                 55      bsr     segment7
+0000105A                            56      
+0000105A  163C 0010                 57      move.b  #16,d3          ; display 'b'
+0000105E  6100 014C                 58      bsr     segment7
+00001062                            59  
+00001062  163C 0011                 60      move.b  #17,d3          ; display 'y'
+00001066  6100 0144                 61      bsr     segment7
+0000106A                            62  
+0000106A  163C 000A                 63      move.b  #10,d3          ; display blank
+0000106E  6100 013C                 64      bsr     segment7
+00001072                            65  
+00001072                            66  * Ask user to hit enter to continue
+00001072  103C 0004                 67      move.b  #4,d0           ; prompt user to hit enter
+00001076  4E4F                      68      trap    #15
+00001078                            69  
+00001078                            70  *------------ Display 'Power' --------------------
+00001078                            71  
+00001078  163C 0012                 72      move.b  #18,d3          ; display 'P'
+0000107C  6100 012E                 73      bsr     segment7
+00001080                            74  
+00001080  163C 0013                 75      move.b  #19,d3          ; display 'o'
+00001084  6100 0126                 76      bsr     segment7
+00001088                            77  
+00001088  163C 0014                 78      move.b  #20,d3          ; display 'w'
+0000108C  6100 011E                 79      bsr     segment7
+00001090                            80  
+00001090  163C 0015                 81      move.b  #21,d3          ; display 'e'
+00001094  6100 0116                 82      bsr     segment7
+00001098                            83  
+00001098  163C 0016                 84      move.b  #22,d3          ; display 'r'
+0000109C  6100 010E                 85      bsr     segment7
+000010A0                            86  
+000010A0  163C 000A                 87      move.b  #10,d3          ; display blank
+000010A4  6100 0106                 88      bsr     segment7
+000010A8                            89  
+000010A8                            90  * Ask user to hit enter to continue
+000010A8  103C 0004                 91      move.b  #4,d0           ; prompt user to hit enter
+000010AC  4E4F                      92      trap    #15
+000010AE                            93  
+000010AE                            94  *------------ Display 'Ready' --------------------
+000010AE                            95  
+000010AE  163C 0017                 96      move.b  #23,d3          ; display 'R'
+000010B2  6100 00F8                 97      bsr     segment7
+000010B6                            98  
+000010B6  163C 0015                 99      move.b  #21,d3          ; display 'e'
+000010BA  6100 00F0                100      bsr     segment7
+000010BE                           101  
+000010BE  163C 0019                102      move.b  #25,d3          ; display 'a'
+000010C2  6100 00E8                103      bsr     segment7
+000010C6                           104  
+000010C6  163C 001A                105      move.b  #26,d3          ; display 'd'
+000010CA  6100 00E0                106      bsr     segment7
+000010CE                           107  
+000010CE  163C 0011                108      move.b  #17,d3          ; display 'y'
+000010D2  6100 00D8                109      bsr     segment7
+000010D6                           110  
+000010D6  163C 000A                111      move.b  #10,d3          ; display blank
+000010DA  6100 00D0                112      bsr     segment7
+000010DE                           113  
+000010DE                           114  * Ask user to hit enter to continue
+000010DE  103C 0004                115      move.b  #4,d0           ; prompt user to hit enter
+000010E2  4E4F                     116      trap    #15
+000010E4                           117  
+000010E4                           118  *------------ Display First Name: Gabriel -----------------
+000010E4                           119  
+000010E4  163C 0017                120      move.b  #23,d3          ; display 'G'
+000010E8  6100 00C2                121      bsr     segment7
+000010EC                           122  
+000010EC  163C 0019                123      move.b  #25,d3          ; display 'a'
+000010F0  6100 00BA                124      bsr     segment7
+000010F4                           125  
+000010F4  163C 0018                126      move.b  #24,d3          ; display 'b'
+000010F8  6100 00B2                127      bsr     segment7
+000010FC                           128  
+000010FC  163C 001C                129      move.b  #28,d3          ; display 'r'
+00001100  6100 00AA                130      bsr     segment7
+00001104                           131  
+00001104  163C 0015                132      move.b  #21,d3          ; display 'i'
+00001108  6100 00A2                133      bsr     segment7
+0000110C                           134  
+0000110C  163C 0023                135      move.b  #35,d3          ; display 'e'
+00001110  6100 009A                136      bsr     segment7
+00001114                           137  
+00001114  163C 0025                138      move.b  #37,d3          ; display 'l'
+00001118  6100 0092                139      bsr     segment7
+0000111C                           140  
+0000111C  163C 000A                141      move.b  #10,d3          ; display blank
+00001120  6100 008A                142      bsr     segment7
+00001124                           143  
+00001124                           144  * Ask user to hit enter to continue
+00001124  103C 0004                145      move.b  #4,d0           ; prompt user to hit enter
+00001128  4E4F                     146      trap    #15
+0000112A                           147  
+0000112A                           148  *------------ Display Surname: Melo --------------------
+0000112A                           149  
+0000112A  163C 0022                150      move.b  #34,d3          ; display 'M'
+0000112E  6100 007C                151      bsr     segment7
+00001132                           152  
+00001132  163C 0023                153      move.b  #35,d3          ; display 'e'
+00001136  6100 0074                154      bsr     segment7
+0000113A                           155  
+0000113A  163C 0025                156      move.b  #37,d3          ; display 'l'
+0000113E  6100 006C                157      bsr     segment7
+00001142                           158  
+00001142  163C 0013                159      move.b  #19,d3          ; display 'o'
+00001146  6100 0064                160      bsr     segment7
+0000114A                           161  
+0000114A  163C 000A                162      move.b  #10,d3          ; display blank
+0000114E  6100 005C                163      bsr     segment7
+00001152                           164  
+00001152                           165  * Ask user to hit enter to continue
+00001152  103C 0004                166      move.b  #4,d0           ; prompt user to hit enter
+00001156  4E4F                     167      trap    #15
+00001158                           168  
+00001158                           169  *------------ Display K-Number: K00280502 -------------------
+00001158                           170  
+00001158  163C 0017                171      move.b  #23,d3          ; display 'K'
+0000115C  6100 004E                172      bsr     segment7
+00001160                           173  
+00001160  163C 0006                174      move.b  #06,d3          ; display '0'
+00001164  6100 0046                175      bsr     segment7
+00001168                           176  
+00001168  163C 0006                177      move.b  #06,d3          ; display '0'
+0000116C  6100 003E                178      bsr     segment7
+00001170                           179  
+00001170  163C 0002                180      move.b  #02,d3          ; display '2'
+00001174  6100 0036                181      bsr     segment7
+00001178                           182  
+00001178  163C 0008                183      move.b  #08,d3          ; display '8'
+0000117C  6100 002E                184      bsr     segment7
+00001180                           185  
+00001180  163C 0006                186      move.b  #06,d3          ; display '0'
+00001184  6100 0026                187      bsr     segment7
+00001188                           188  
+00001188  163C 0005                189      move.b  #05,d3          ; display '5'
+0000118C  6100 001E                190      bsr     segment7
+00001190                           191  
+00001190  163C 0006                192      move.b  #06,d3          ; display '0'
+00001194  6100 0016                193      bsr     segment7
+00001198                           194  
+00001198  163C 0002                195      move.b  #02,d3          ; display '2'
+0000119C  6100 000E                196      bsr     segment7
+000011A0                           197  
+000011A0                           198  * Ask user to hit enter to continue
+000011A0  103C 0004                199      move.b  #4,d0           ; prompt user to hit enter
+000011A4  4E4F                     200      trap    #15
+000011A6                           201  
+000011A6  103C 0009                202      MOVE.B  #9,D0           ; halt simulator
+000011AA  4E4F                     203      TRAP    #15             ; halt instruction
+000011AC                           204  
+000011AC                           205  * Subroutine to display a digit on the 7-segment display
+000011AC                           206  segment7: 
+000011AC  48E7 1080                207      movem.l d3/a0,-(a7)     ; save registers 
+000011B0  41F9 000011CA            208      lea     digits,a0       ; load address of bit pattern array into A0 
+000011B6  C6BC 000000FF            209      and.l   #$00ff,d3       ; force the top 8 bits of D3 to 0
+000011BC  1030 3000                210      move.b  (a0,d3.w),d0    ; load digit bit pattern into d0 (use word indexing for array)
+000011C0  1480                     211      move.b  d0,(a2)         ; display digit by placing in A2 the contents of A0 at index D3
+000011C2  548A                     212      adda.l  #2,a2           ; move to next digit in 7-segment display
+000011C4  4CDF 0108                213      movem.l (a7)+,d3/a0     ; restore registers 
+000011C8  4E75                     214      rts                     ; return from subroutine
+000011CA                           215  
+000011CA                           216  * Bit patterns to form characters on the 7-segment display
+000011CA                           217  digits: 
+000011CA= 3F                       218      dc.b  $3F           ; 0
+000011CB= 06                       219      dc.b  $06           ; 1
+000011CC= 5B                       220      dc.b  $5B           ; 2
+000011CD= 4F                       221      dc.b  $4F           ; 3
+000011CE= 66                       222      dc.b  $66           ; 4
+000011CF= 6D                       223      dc.b  $6D           ; 5
+000011D0= 7D                       224      dc.b  $7D           ; 6
+000011D1= 07                       225      dc.b  $07           ; 7
+000011D2= 7F                       226      dc.b  $7F           ; 8
+000011D3= 6F                       227      dc.b  $6F           ; 9
+000011D4= 00                       228      dc.b  $00           ; blank (off)
+000011D5= 40                       229      dc.b  $40           ; dash (-)
+000011D6                           230      
+000011D6= 79                       231      dc.b  $79           ; E
+000011D7= 76                       232      dc.b  $76           ; H
+000011D8= 54                       233      dc.b  $54           ; n
+000011D9= 5C                       234      dc.b  $5C           ; o
+000011DA= 5E                       235      dc.b  $5E           ; S
+000011DB= 73                       236      dc.b  $73           ; t
+000011DC= 50                       237      dc.b  $50           ; a
+000011DD= 6D                       238      dc.b  $6D           ; d
+000011DE= 1C                       239      dc.b  $1C           ; b
+000011DF= 0E                       240      dc.b  $0E           ; y
+000011E0= 4E                       241      dc.b  $4E           ; P
+000011E1= 38                       242      dc.b  $38           ; w
+000011E2= 5D                       243      dc.b  $5D           ; r
+000011E3= 3F                       244      dc.b  $3F           ; R
+000011E4= 31                       245      dc.b  $31           ; i
+000011E5= 70                       246      dc.b  $70           ; c
+000011E6= 37                       247      dc.b  $37           ; l
+000011E7= 67                       248      dc.b  $67           ; N
+000011E8= 77                       249      dc.b  $77           ; G
+000011E9= 3E                       250      dc.b  $3E           ; M
+000011EA= 79                       251      dc.b  $79           ; e (reused)
+000011EB= 6D                       252      dc.b  $6D           ; 5 (reused)
+000011EC                           253  
+000011EC                           254      ds.w  0             ; force word boundary (always the last element in the array of digits)
+000011EC                           255  
+000011EC                           256      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+DIGITS              11CA
+SEGMENT7            11AC
+START               1000
